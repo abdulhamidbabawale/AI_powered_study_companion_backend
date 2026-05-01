@@ -39,3 +39,39 @@ class ChatModel(BaseModel):
     messages: List[MessageModel] = []
     created_at: datetime = datetime.utcnow()
     updated_at: datetime = datetime.utcnow()
+
+
+class MaterialModel(BaseModel):
+    model_config = ConfigDict(populate_by_name=True)
+    id: str = Field(default_factory=lambda: str(uuid4()), alias="_id")
+    user_id: str
+    chat_id: str                        # tied to a chat
+    title: Optional[str]
+    file_type: str
+    raw_text: str
+    summary: Optional[str] = None
+    flashcards: Optional[list] = None
+    processing_status: str = "processing"   # processing | done | failed
+    processing_error: Optional[str] = None
+    created_at: datetime = Field(default_factory=datetime.now)
+    updated_at: datetime = Field(default_factory=datetime.now)
+
+
+class AssessmentType(str, Enum):
+    TEST = "test"
+    EXAM = "exam"
+    QUIZ = "quiz"
+    ASSIGNMENT = "assignment"
+
+class AssessmentModel(BaseModel):
+    model_config = ConfigDict(populate_by_name=True)
+    id: str = Field(default_factory=lambda: str(uuid4()), alias="_id")
+    user_id: str
+    title: str
+    assessment_type: AssessmentType
+    due_date: datetime
+    description: Optional[str] = None
+    is_completed: bool = False
+    reminder_date: Optional[datetime] = None   # when to remind the student
+    created_at: datetime = Field(default_factory=datetime.now)
+    updated_at: datetime = Field(default_factory=datetime.now)
