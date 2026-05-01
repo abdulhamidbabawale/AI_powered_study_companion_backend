@@ -1,15 +1,13 @@
 from google import genai
+import asyncio
+import os
+from dotenv import load_dotenv
 
-# The client gets the API key from the environment variable `GEMINI_API_KEY`.
-# client = genai.Client()
+load_dotenv()
 
-# response = client.models.generate_content(
-#     model="gemini-3-flash-preview", contents="Explain how AI works in a few words"
-# )
-# print(response.text)
+client = genai.Client(api_key=os.getenv("GOOGLE_API_KEY")) 
 
-client = genai.Client()  # automatically picks up GEMINI_API_KEY from .env
-GEMINI_MODEL = "gemini-2.5-flash"
+GEMINI_MODEL = "gemini-2.5-flash-lite"
 
 LEARNING_SYSTEM_PROMPT = """
 You are an expert educational assistant helping students learn effectively.
@@ -32,3 +30,21 @@ Never:
 - Make up information not found in the material
 - Go off topic from the educational content
 """
+
+async def generate_with_retry(contents, max_retries: int = 3, delay: int = 5):
+    for attempt in range(max_retries):
+        try:
+            response = client.models.generate_content(
+                model=GEMINI_MODEL,
+                contents=contents,
+                config={"system_instruction": LEARNING_SYSTEM_PROMPT}
+            )
+            return response.text
+        except Exception as e:
+            if "503" in str(e) or "UNAVAILABLE" in str(e):
+                if attempt < max_retries - 1:
+                    await asyncio.sleep(delay * (attempt + 1))  # 5s, 10s, 15s
+                    continue
+            raise e  # re-raise if it's a different error
+
+    raise Exception("Gemini is currently unavailable. Please try again later.")
