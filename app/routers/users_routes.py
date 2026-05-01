@@ -15,9 +15,10 @@ async def register(user:CreateUserSchema):
     
 @router.post("/login")
 async def login(credentials: LoginSchema):
-    token = await login_user(credentials)
+    res = await login_user(credentials)
     return {
         "message": "Login successful",
-        "access_token": token,
-        "token_type": "bearer"
+        "access_token": res["access_token"],
+        "token_type": "bearer",
+        "user":res["user"]
     }
