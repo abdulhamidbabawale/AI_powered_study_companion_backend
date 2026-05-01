@@ -34,13 +34,11 @@ app/
 │       ├── user_queries.py
 │       ├── chat_queries.py
 │       ├── material_queries.py
-│       ├── flashcard_queries.py
 │       └── assessment_queries.py
 ├── routers/
 │   ├── users_routes.py
 │   ├── ai_routes.py
 │   ├── material_routes.py
-│   ├── flashcard_routes.py
 │   └── assessment_routes.py
 ├── schemas/
 │   ├── user_schemas.py
@@ -50,7 +48,6 @@ app/
 │   ├── user_services.py
 │   ├── ai_services.py
 │   ├── material_services.py
-│   ├── flashcard_services.py
 │   ├── assessment_services.py
 │   └── file_services.py
 └── main.py
