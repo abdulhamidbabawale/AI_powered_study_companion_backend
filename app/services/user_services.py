@@ -56,4 +56,12 @@ async def login_user(credentials: LoginSchema):
         "role": user["role"]
     })
 
-    return token
+    # return token
+    return {
+        "access_token": token,
+        "user": {
+            "first_name": user["first_name"],
+            "last_name": user["last_name"],
+            "email": user["email"],
+            "role": user["role"],
+    }}
